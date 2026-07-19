@@ -554,26 +554,46 @@
     drawStars();
     window.onresize = function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
 
-    // MUSIC
-    var bgMusic = document.getElementById('bgMusic');
-    var musicPlaying = false;
-    window.toggleMusic = function() {
-      var btn = document.getElementById('musicToggle');
-      if (!musicPlaying) {
-        bgMusic.play().then(function() {
-          musicPlaying = true;
-          btn.textContent = '🎵 MUSIC ON';
-          btn.className = 'music-btn music-on';
-        }).catch(function() {
-          alert('🎵 Click anywhere first, then try music again!');
-        });
-      } else {
-        bgMusic.pause();
-        musicPlaying = false;
-        btn.textContent = '🔇 MUSIC OFF';
-        btn.className = 'music-btn music-off';
-      }
-    };
+    // MUSIC (FIXED)
+var bgMusic = document.getElementById('bgMusic');
+var musicPlaying = false;
+
+bgMusic.addEventListener('ended', function() {
+  bgMusic.currentTime = 0;
+  bgMusic.play();
+});
+
+bgMusic.addEventListener('pause', function() {
+  if (musicPlaying) {
+    bgMusic.play().catch(function() {});
+  }
+});
+
+bgMusic.addEventListener('error', function() {
+  musicPlaying = false;
+  var btn = document.getElementById('musicToggle');
+  btn.textContent = '🔇 MUSIC OFF';
+  btn.className = 'music-btn music-off';
+});
+
+window.toggleMusic = function() {
+  var btn = document.getElementById('musicToggle');
+  if (!musicPlaying) {
+    bgMusic.play().then(function() {
+      musicPlaying = true;
+      btn.textContent = '🎵 MUSIC ON';
+      btn.className = 'music-btn music-on';
+    }).catch(function() {
+      alert('🎵 Click anywhere first, then try music again!');
+    });
+  } else {
+    musicPlaying = false;
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    btn.textContent = '🔇 MUSIC OFF';
+    btn.className = 'music-btn music-off';
+  }
+};
 
     // DATA
     var todo = [], done = [], currentCategory = 'all', xp = 0, streak = 0, lastStudyDate = '';
