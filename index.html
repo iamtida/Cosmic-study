@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cosmic Pixel Checklist ULTRA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      image-rendering: pixelated;
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #000022;
+      font-family: 'Press Start 2P', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      image-rendering: pixelated;
+    }
+    
+    .main-box {
+      position: relative;
+      z-index: 1;
+      background: rgba(10, 15, 50, 0.92);
+      border: 6px solid #6699ff;
+      padding: 20px;
+      width: 600px;
+      max-width: 95vw;
+      box-shadow: 8px 8px 0px #3355aa, 0 0 40px rgba(100, 150, 255, 0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    h1 {
+      color: #ffcc00;
+      text-align: center;
+      font-size: 14px;
+      margin: 0 0 5px 0;
+      text-shadow: 4px 4px 0px #886600;
+      line-height: 1.8;
+      background: rgba(0, 0, 40, 0.8);
+      padding: 12px;
+      border: 4px solid #ffcc00;
+      box-shadow: inset 0 0 0 3px #3355aa;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #aaccff;
+      font-size: 7px;
+      margin: 5px 0 15px 0;
+      text-shadow: 2px 2px 0px #000;
+    }
+    
+    .stats-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      font-size: 7px;
+      color: #ffcc00;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .stat-box {
+      background: rgba(0,0,30,0.9);
+      border: 3px solid #6699ff;
+      padding: 8px 12px;
+      text-align: center;
+      box-shadow: 3px 3px 0px #3355aa;
+    }
+    
+    .stat-box span {
+      display: block;
+      font-size: 10px;
+      margin-top: 4px;
+      color: #ffffff;
+    }
+    
+    .mascot-area {
+      text-align: center;
+      margin-bottom: 12px;
+      font-size: 30px;
+      animation: bounce 1s ease-in-out infinite;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .mascot-area:active {
+      animation: spin 0.3s linear;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.3); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    
+    .mascot-msg {
+      font-size: 7px;
+      color: #ffcc00;
+      margin-top: 2px;
+    }
+    
+    .music-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .music-btn {
+      font-size: 7px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    
+    .music-on {
+      background: #228833;
+      border-color: #44ff44;
+    }
+    
+    .music-off {
+      background: #882222;
+      border-color: #ff4444;
+    }
+    
+    .emoji-picker {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: rgba(0,0,30,0.7);
+      padding: 8px;
+      border: 3px solid #4466aa;
+    }
+    
+    .emoji-picker button {
+      font-size: 16px;
+      padding: 4px 6px;
+      background: rgba(30,40,80,0.8);
+      border: 2px solid #5577cc;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #1a3366;
+      transition: 0.1s;
+      line-height: 1;
+    }
+    
+    .emoji-picker button:hover {
+      background: #3355aa;
+      border-color: #ffcc00;
+      transform: scale(1.2);
+    }
+    
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 8px;
+      font-family: 'Press Start 2P', monospace;
+      border: 4px solid #6699ff;
+      background: #000033;
+      color: #ffffff;
+      outline: none;
+      box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5);
+    }
+    
+    input:focus {
+      border-color: #ffcc00;
+      box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5), 0 0 10px rgba(255,200,0,0.5);
+    }
+    
+    input::placeholder {
+      color: #4466aa;
+      font-size: 7px;
+    }
+    
+    button {
+      padding: 12px 16px;
+      font-size: 8px;
+      font-family: 'Press Start 2P', monospace;
+      background: #3366cc;
+      color: white;
+      border: 4px solid #ffcc00;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 4px 4px 0px #1a3366;
+      transition: all 0.1s;
+      text-shadow: 2px 2px 0px #000;
+      white-space: nowrap;
+    }
+    
+    button:hover {
+      background: #4477dd;
+      box-shadow: 2px 2px 0px #1a3366;
+      transform: translate(2px, 2px);
+    }
+    
+    button:active {
+      box-shadow: 0px 0px 0px #1a3366;
+      transform: translate(4px, 4px);
+      background: #2244aa;
+    }
+    
+    .timer-section {
+      background: rgba(20, 30, 70, 0.8);
+      border: 4px solid #ff8800;
+      padding: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      box-shadow: inset 0 0 0 3px rgba(0,0,40,0.5);
+    }
+    
+    .timer-display {
+      font-size: 24px;
+      color: #ffcc00;
+      margin: 8px 0;
+      text-shadow: 3px 3px 0px #664400;
+    }
+    
+    .timer-btns {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .timer-btns button {
+      font-size: 7px;
+      padding: 8px 10px;
+    }
+    
+    .pause-btn {
+      background: #ff8800 !important;
+      border-color: #ffaa00 !important;
+    }
+    
+    .resume-btn {
+      background: #228833 !important;
+      border-color: #44ff44 !important;
+    }
+    
+    .categories {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .category-btn {
+      font-size: 7px;
+      padding: 6px 10px;
+      background: rgba(30,40,80,0.8);
+      border: 3px solid #5577cc;
+    }
+    
+    .category-btn.active {
+      border-color: #ffcc00;
+      background: #3355aa;
+      box-shadow: 0 0 10px rgba(255,200,0,0.5);
+    }
+    
+    .section {
+      background: rgba(20, 30, 70, 0.8);
+      border: 4px solid #6699ff;
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 0 3px rgba(0,0,40,0.5);
+    }
+    
+    .section h2 {
+      color: #ffcc00;
+      margin: 0 0 10px 0;
+      font-size: 9px;
+      text-shadow: 3px 3px 0px #664400;
+      background: rgba(0,0,30,0.8);
+      padding: 8px;
+      border: 3px solid #ff8800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .done-header {
+      border-color: #00ccff;
+    }
+    
+    .task-item {
+      background: rgba(30, 40, 80, 0.9);
+      padding: 8px;
+      margin: 5px 0;
+      border: 3px solid #5577cc;
+      color: #ddeeff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7px;
+      box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+      line-height: 1.5;
+    }
+    
+    .task-item:hover {
+      border-color: #ffcc00;
+    }
+    
+    .task-meta {
+      font-size: 6px;
+      color: #8899cc;
+      margin-top: 3px;
+    }
+    
+    .task-item button {
+      padding: 5px 7px;
+      font-size: 6px;
+      margin-left: 3px;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+    }
+    
+    .done-btn {
+      background: #228833;
+      border-color: #44ff44;
+      color: #ffffff;
+    }
+    
+    .delete-btn {
+      background: #882222;
+      border-color: #ff4444;
+    }
+    
+    .back-btn {
+      background: #225588;
+      border-color: #44aaff;
+    }
+    
+    .empty-msg {
+      color: #4466aa;
+      text-align: center;
+      padding: 20px;
+      font-size: 7px;
+      border: 3px dashed #4466aa;
+    }
+    
+    .due-input {
+      width: 100%;
+      margin-top: 4px;
+      font-size: 6px;
+      padding: 4px;
+      background: #000033;
+      border: 2px solid #5577cc;
+      color: #aaccff;
+      font-family: 'Press Start 2P', monospace;
+    }
+    
+    .confetti-star {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      animation: fall linear forwards;
+      font-size: 20px;
+    }
+    
+    @keyframes fall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+    
+    .constellation-box {
+      background: rgba(0,0,30,0.8);
+      border: 3px solid #ffcc00;
+      padding: 10px;
+      margin-bottom: 12px;
+      text-align: center;
+      font-size: 7px;
+      color: #ffcc00;
+    }
+    
+    .constellation-stars {
+      font-size: 18px;
+      letter-spacing: 4px;
+      margin: 8px 0;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: #000033;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #6699ff;
+      border: 2px solid #000033;
+      image-rendering: pixelated;
+    }
+    
+    .streak-fire {
+      display: inline-block;
+      animation: flicker 0.3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes flicker {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starCanvas"></canvas>
+  
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://www.dropbox.com/scl/fi/u3k25gubwf3hu2nhl2gtb/a-playlist-to-romanticize-studying-physics.mp3?rlkey=j0awd42mwr43t9fkq8tff5ytj&st=t3prqi6k&dl=1" type="audio/mpeg">
+  </audio>
+  
+  <div class="main-box">
+    <h1>🌙 ⭐ COSMIC QUEST ULTRA 🪐<br>✨ PIXEL STUDY LOG ✨</h1>
+    <div class="subtitle">✦ reach for the stars ✦</div>
+    
+    <div class="mascot-area" id="mascot" title="Click me!">👩‍🚀</div>
+    <div class="mascot-msg" id="mascotMsg">You can do it!</div>
+    
+    <div class="music-controls">
+      <button id="musicToggle" class="music-btn music-off" onclick="toggleMusic()">🔇 MUSIC OFF</button>
+      <span style="font-size:6px; color:#aaccff;">🎵 romanticizing physics</span>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-box">⭐ RANK<span id="rankDisplay">Cadet</span></div>
+      <div class="stat-box">💫 XP<span id="xpDisplay">0</span></div>
+      <div class="stat-box">🔥 STREAK<span id="streakDisplay">0 days</span></div>
+    </div>
+    
+    <div class="constellation-box">
+      <div>🌌 YOUR CONSTELLATION</div>
+      <div class="constellation-stars" id="constellationDisplay">⭐ · ⭐ · ⭐</div>
+      <div style="font-size:6px; color:#aaccff;" id="constellationName">Complete tasks to build!</div>
+    </div>
+    
+    <div class="timer-section">
+      <div style="font-size:8px; color:#ffcc00; margin-bottom:5px;">⏱️ FOCUS TIMER</div>
+      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div style="display:flex; gap:5px; justify-content:center; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
+        <input type="number" id="customMinutes" value="25" min="1" max="120" style="width:60px; font-size:8px; padding:8px; text-align:center;">
+        <span style="font-size:7px; color:#ffcc00;">MIN</span>
+      </div>
+      <div class="timer-btns">
+        <button onclick="startCustomTimer()">▶ START</button>
+        <button id="pauseResumeBtn" onclick="pauseResumeTimer()" class="pause-btn">⏸️ PAUSE</button>
+        <button onclick="stopTimer()">⏹ STOP</button>
+        <button onclick="startTimer(25)">25 MIN</button>
+        <button onclick="startTimer(5)">5 MIN</button>
+      </div>
+    </div>
+    
+    <div style="font-size:7px; color:#aaccff; text-align:center; margin-bottom:5px;">📁 CATEGORIES</div>
+    <div class="categories">
+      <button class="category-btn active" onclick="setCategory('all')">⭐ ALL</button>
+      <button class="category-btn" onclick="setCategory('Homework')">📚 HW</button>
+      <button class="category-btn" onclick="setCategory('Exam')">📝 EXAM</button>
+      <button class="category-btn" onclick="setCategory('Project')">🔬 PROJ</button>
+    </div>
+    
+    <div style="font-size:7px; color:#aaccff; text-align:center; margin-bottom:5px;">🎨 EMOJI PICKER</div>
+    <div class="emoji-picker">
+      <button onclick="addEmoji('🪐')">🪐</button>
+      <button onclick="addEmoji('🌍')">🌍</button>
+      <button onclick="addEmoji('⭐')">⭐</button>
+      <button onclick="addEmoji('🌙')">🌙</button>
+      <button onclick="addEmoji('💫')">💫</button>
+      <button onclick="addEmoji('🚀')">🚀</button>
+      <button onclick="addEmoji('🛸')">🛸</button>
+      <button onclick="addEmoji('☄️')">☄️</button>
+      <button onclick="addEmoji('🔭')">🔭</button>
+      <button onclick="addEmoji('📖')">📖</button>
+    </div>
+    
+    <div class="input-row">
+      <input type="text" id="taskInput" placeholder="NEW MISSION..." maxlength="40">
+      <button onclick="addTask()">🚀 GO</button>
+    </div>
+    
+    <div style="margin-bottom:8px;">
+      <input type="datetime-local" id="dueDate" class="due-input" style="width:100%; font-size:7px; padding:8px;">
+    </div>
+    
+    <div class="section">
+      <h2 class="todo-header">🌠 MISSION LOG<span style="font-size:8px;">[<span id="todoCount">0</span>]</span></h2>
+      <div id="todoList"></div>
+    </div>
+    
+    <div class="section">
+      <h2 class="done-header">✨ DISCOVERIES<span style="font-size:8px;">[<span id="doneCount">0</span>]</span></h2>
+      <div id="doneList"></div>
+    </div>
+    
+    <div style="text-align:center; margin-top:10px;">
+      <button onclick="exportList()" style="font-size:7px;">🖨️ PRINT LOG</button>
+    </div>
+  </div>
+
+  <script>
+    // STARS
+    var canvas = document.getElementById('starCanvas');
+    var ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var stars = [];
+    for (var i = 0; i < 250; i++) {
+      stars.push({
+        x: Math.floor(Math.random() * canvas.width),
+        y: Math.floor(Math.random() * canvas.height),
+        size: Math.floor(Math.random() * 3) + 1,
+        speed: Math.random() * 0.03 + 0.01,
+        phase: Math.random() * Math.PI * 2,
+        color: Math.random() < 0.2 ? '#ffdd44' : '#ffffff'
+      });
+    }
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i]; s.phase += s.speed;
+        var alpha = 0.3 + Math.abs(Math.sin(s.phase)) * 0.7;
+        ctx.fillStyle = s.color; ctx.globalAlpha = alpha;
+        ctx.fillRect(Math.floor(s.x), Math.floor(s.y), s.size, s.size);
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+    window.onresize = function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+
+    // MUSIC
+    var bgMusic = document.getElementById('bgMusic');
+    var musicPlaying = false;
+    window.toggleMusic = function() {
+      var btn = document.getElementById('musicToggle');
+      if (!musicPlaying) {
+        bgMusic.play().then(function() {
+          musicPlaying = true;
+          btn.textContent = '🎵 MUSIC ON';
+          btn.className = 'music-btn music-on';
+        }).catch(function() {
+          alert('🎵 Click anywhere first, then try music again!');
+        });
+      } else {
+        bgMusic.pause();
+        musicPlaying = false;
+        btn.textContent = '🔇 MUSIC OFF';
+        btn.className = 'music-btn music-off';
+      }
+    };
+
+    // DATA
+    var todo = [], done = [], currentCategory = 'all', xp = 0, streak = 0, lastStudyDate = '';
+    function load() {
+      var t = localStorage.getItem('ultraTodo'), d = localStorage.getItem('ultraDone');
+      var x = localStorage.getItem('ultraXP'), s = localStorage.getItem('ultraStreak'), l = localStorage.getItem('ultraLastDate');
+      if (t) todo = JSON.parse(t); if (d) done = JSON.parse(d);
+      if (x) xp = parseInt(x); if (s) streak = parseInt(s); if (l) lastStudyDate = l;
+    }
+    function save() {
+      localStorage.setItem('ultraTodo', JSON.stringify(todo));
+      localStorage.setItem('ultraDone', JSON.stringify(done));
+      localStorage.setItem('ultraXP', xp); localStorage.setItem('ultraStreak', streak);
+      localStorage.setItem('ultraLastDate', lastStudyDate);
+    }
+    function addXP(amount) { xp += amount; updateStats(); updateConstellation(); if (xp % 100 < amount) confetti(); }
+    function updateStreak() {
+      var today = new Date().toDateString();
+      if (lastStudyDate !== today) {
+        var yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (lastStudyDate === yesterday) streak++; else streak = 1;
+        lastStudyDate = today;
+      }
+      updateStats();
+    }
+    function updateStats() {
+      document.getElementById('xpDisplay').textContent = xp;
+      var rank = 'Cadet'; if (xp >= 500) rank = 'Galaxy Master'; else if (xp >= 300) rank = 'Astronaut'; else if (xp >= 150) rank = 'Pilot';
+      document.getElementById('rankDisplay').textContent = rank;
+      var sh = streak + ' days'; if (streak >= 7) sh += ' <span class="streak-fire">🔥</span>';
+      document.getElementById('streakDisplay').innerHTML = sh;
+    }
+    var ce = ['⭐', '✨', '💫', '🌟', '🌙', '🪐'];
+    var cn = ['Orion\'s Belt', 'Big Dipper', 'Little Star', 'Cosmic Dust', 'Nebula Way', 'Galaxy Core', 'Star Bridge', 'Comet Trail', 'Moon Path', 'Astro Link', 'Space Arc', 'Nova Chain'];
+    function updateConstellation() {
+      var t = done.length, d = document.getElementById('constellationDisplay'), n = document.getElementById('constellationName');
+      if (t === 0) { d.textContent = '⭐ · ⭐ · ⭐'; n.textContent = 'Complete tasks to build!'; return; }
+      var p = ''; for (var i = 0; i < Math.min(t, 12); i++) { p += ce[i % 6]; if (i < Math.min(t, 12) - 1) p += ' · '; }
+      if (t > 12) p += ' ...';
+      d.textContent = p; n.textContent = cn[Math.min(t - 1, 11)];
+    }
+    var me = ['👩‍🚀', '🪼', '🧚', '⭐', '🤖', '👾', '🐱', '🦊', '🐼'];
+    var mm = ['You can do it!', 'To the stars!', 'Study time!', 'Focus mode!', 'Great job!', 'Keep going!', 'Almost there!', 'Cosmic power!'];
+    var cm = 0;
+    document.getElementById('mascot').onclick = function() {
+      cm = (cm + 1) % me.length; this.textContent = me[cm];
+      document.getElementById('mascotMsg').textContent = mm[Math.floor(Math.random() * 8)];
+      this.style.animation = 'none'; this.offsetHeight;
+      this.style.animation = 'spin 0.4s linear';
+      setTimeout(() => { this.style.animation = 'bounce 1s ease-in-out infinite'; }, 400);
+    };
+
+    // TIMER (FIXED + PAUSE/RESUME + CUSTOM)
+    var timerInterval = null;
+    var timerSeconds = 0;
+    var isPaused = false;
+    
+    window.startTimer = function(minutes) {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      timerSeconds = minutes * 60;
+      isPaused = false;
+      updateTimerDisplay();
+      updatePauseButton();
+      timerInterval = setInterval(function() {
+        timerSeconds--;
+        updateTimerDisplay();
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval); timerInterval = null;
+          timerSeconds = 0; isPaused = false;
+          updateTimerDisplay(); updatePauseButton();
+          alert('⏰ Time is up! Great work, astronaut!');
+          addXP(20); confetti();
+        }
+      }, 1000);
+    };
+    
+    window.startCustomTimer = function() {
+      var input = document.getElementById('customMinutes');
+      var minutes = parseInt(input.value);
+      if (isNaN(minutes) || minutes < 1) minutes = 25;
+      if (minutes > 120) minutes = 120;
+      input.value = minutes;
+      startTimer(minutes);
+    };
+    
+    window.pauseResumeTimer = function() {
+      if (timerSeconds <= 0) return;
+      if (isPaused) {
+        // RESUME
+        isPaused = false;
+        updatePauseButton();
+        timerInterval = setInterval(function() {
+          timerSeconds--;
+          updateTimerDisplay();
+          if (timerSeconds <= 0) {
+            clearInterval(timerInterval); timerInterval = null;
+            timerSeconds = 0; isPaused = false;
+            updateTimerDisplay(); updatePauseButton();
+            alert('⏰ Time is up! Great work, astronaut!');
+            addXP(20); confetti();
+          }
+        }, 1000);
+      } else {
+        // PAUSE
+        isPaused = true;
+        updatePauseButton();
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    };
+    
+    window.stopTimer = function() {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      timerSeconds = 0;
+      isPaused = false;
+      updateTimerDisplay();
+      updatePauseButton();
+    };
+    
+    function updateTimerDisplay() {
+      var min = Math.floor(timerSeconds / 60), sec = timerSeconds % 60;
+      document.getElementById('timerDisplay').textContent = (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+    
+    function updatePauseButton() {
+      var btn = document.getElementById('pauseResumeBtn');
+      if (isPaused) {
+        btn.textContent = '▶ RESUME';
+        btn.className = 'resume-btn';
+      } else {
+        btn.textContent = '⏸️ PAUSE';
+        btn.className = 'pause-btn';
+      }
+    }
+    
+    window.setCategory = function(cat) {
+      currentCategory = cat;
+      var btns = document.querySelectorAll('.category-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+      event.target.classList.add('active'); render();
+    };
+    
+    window.addEmoji = function(emoji) {
+      var input = document.getElementById('taskInput');
+      input.value = emoji + ' ' + input.value; input.focus();
+    };
+    
+    function confetti() {
+      var emojis = ['⭐', '✨', '💫', '🌟', '🎉', '🪐', '🚀', '💖'];
+      for (var i = 0; i < 20; i++) {
+        var star = document.createElement('div'); star.className = 'confetti-star';
+        star.textContent = emojis[Math.floor(Math.random() * 8)];
+        star.style.left = Math.random() * 100 + '%'; star.style.top = -(Math.random() * 100) + 'px';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        document.body.appendChild(star);
+        setTimeout(function() { star.remove(); }, 3000);
+      }
+    }
+    
+    function render() {
+      var filtered = (currentCategory === 'all') ? todo : todo.filter(function(t) { return t.category === currentCategory; });
+      var tHTML = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var t = filtered[i];
+        tHTML += '<div class="task-item"><div><span>' + t.text + '</span><div class="task-meta">' + (t.category || 'General') + (t.due ? ' | 📅 ' + t.due : '') + '</div></div><span><button class="done-btn" onclick="complete(\'' + t.id + '\')">✓</button><button class="delete-btn" onclick="delTodo(\'' + t.id + '\')">✗</button></span></div>';
+      }
+      if (filtered.length === 0) tHTML = '<div class="empty-msg">☆ NO MISSIONS YET ☆</div>';
+      document.getElementById('todoList').innerHTML = tHTML;
+      var dHTML = '';
+      for (var j = 0; j < done.length; j++) {
+        var d = done[j];
+        dHTML += '<div class="task-item"><div><span>' + d.text + '</span><div class="task-meta">' + (d.category || 'General') + '</div></div><span><button class="back-btn" onclick="restore(\'' + d.id + '\')">↩</button><button class="delete-btn" onclick="delDone(\'' + d.id + '\')">✗</button></span></div>';
+      }
+      if (done.length === 0) dHTML = '<div class="empty-msg">☆ COMPLETE MISSIONS ☆</div>';
+      document.getElementById('doneList').innerHTML = dHTML;
+      document.getElementById('todoCount').textContent = filtered.length;
+      document.getElementById('doneCount').textContent = done.length;
+      updateConstellation(); save();
+    }
+    
+    window.addTask = function() {
+      var text = document.getElementById('taskInput').value.trim();
+      if (text === '') return;
+      var due = document.getElementById('dueDate').value;
+      todo.push({ id: Date.now().toString(), text: text, category: currentCategory === 'all' ? 'General' : currentCategory, due: due ? new Date(due).toLocaleString() : null });
+      document.getElementById('taskInput').value = ''; document.getElementById('dueDate').value = '';
+      updateStreak(); addXP(10); render();
+      document.getElementById('mascotMsg').textContent = 'Mission added! 🚀';
+    };
+    
+    window.complete = function(id) {
+      for (var i = 0; i < todo.length; i++) { if (todo[i].id === id) { done.push(todo[i]); todo.splice(i, 1); break; } }
+      addXP(30); updateStreak(); document.getElementById('mascotMsg').textContent = 'Awesome work! ⭐';
+      if (done.length % 5 === 0) confetti(); render();
+    };
+    
+    window.delTodo = function(id) { todo = todo.filter(function(t) { return t.id !== id; }); render(); };
+    window.restore = function(id) { for (var i = 0; i < done.length; i++) { if (done[i].id === id) { todo.push(done[i]); done.splice(i, 1); break; } } render(); };
+    window.delDone = function(id) { done = done.filter(function(d) { return d.id !== id; }); render(); };
+    
+    window.exportList = function() {
+      var text = '🌌 COSMIC STUDY LOG 🌌\n\nMISSIONS:\n';
+      for (var i = 0; i < todo.length; i++) text += '☐ ' + todo[i].text + '\n';
+      text += '\nDISCOVERIES:\n';
+      for (var j = 0; j < done.length; j++) text += '☑ ' + done[j].text + '\n';
+      text += '\n⭐ XP: ' + xp + ' | 🔥 Streak: ' + streak + ' days';
+      var blob = new Blob([text], {type: 'text/plain'});
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'cosmic-study-log.txt'; a.click();
+    };
+    
+    document.getElementById('taskInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') addTask(); });
+    
+    load(); updateStats(); updateConstellation(); render();
+    document.getElementById('mascot').textContent = me[0];
+  </script>
+</body>
+</html>
