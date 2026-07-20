@@ -2,11 +2,8 @@
 <html>
 <head>
   <title>Cosmic Pixel Checklist ULTRA</title>
-  <head>
-  <title>Cosmic Pixel Checklist ULTRA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="https://em-content.zobj.net/thumbs/120/apple/354/rocket_1f680.png">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * {
       image-rendering: pixelated;
@@ -121,31 +118,6 @@
       margin-top: 2px;
     }
     
-    .music-controls {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    
-    .music-btn {
-      font-size: 7px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    
-    .music-on {
-      background: #228833;
-      border-color: #44ff44;
-    }
-    
-    .music-off {
-      background: #882222;
-      border-color: #ff4444;
-    }
-    
     .emoji-picker {
       display: flex;
       gap: 5px;
@@ -239,7 +211,7 @@
     }
     
     .timer-display {
-      font-size: 24px;
+      font-size: 20px;
       color: #ffcc00;
       margin: 8px 0;
       text-shadow: 3px 3px 0px #664400;
@@ -408,6 +380,31 @@
       margin: 8px 0;
     }
     
+    .music-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .music-btn {
+      font-size: 7px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    
+    .music-on {
+      background: #228833;
+      border-color: #44ff44;
+    }
+    
+    .music-off {
+      background: #882222;
+      border-color: #ff4444;
+    }
+    
     ::-webkit-scrollbar {
       width: 10px;
       background: #000033;
@@ -554,59 +551,43 @@
     drawStars();
     window.onresize = function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
 
-    // MUSIC (FIXED)
-var bgMusic = document.getElementById('bgMusic');
-var musicPlaying = false;
-
-bgMusic.addEventListener('ended', function() {
-  bgMusic.currentTime = 0;
-  bgMusic.play();
-});
-
-bgMusic.addEventListener('pause', function() {
-  if (musicPlaying) {
-    bgMusic.play().catch(function() {});
-  }
-});
-
-bgMusic.addEventListener('error', function() {
-  musicPlaying = false;
-  var btn = document.getElementById('musicToggle');
-  btn.textContent = '🔇 MUSIC OFF';
-  btn.className = 'music-btn music-off';
-});
-
-window.toggleMusic = function() {
-  var btn = document.getElementById('musicToggle');
-  if (!musicPlaying) {
-    bgMusic.play().then(function() {
-      musicPlaying = true;
-      btn.textContent = '🎵 MUSIC ON';
-      btn.className = 'music-btn music-on';
-    }).catch(function() {
-      alert('🎵 Click anywhere first, then try music again!');
-    });
-  } else {
-    musicPlaying = false;
-    bgMusic.pause();
-    bgMusic.currentTime = 0;
-    btn.textContent = '🔇 MUSIC OFF';
-    btn.className = 'music-btn music-off';
-  }
-};
+    // MUSIC
+    var bgMusic = document.getElementById('bgMusic');
+    var musicPlaying = false;
+    window.toggleMusic = function() {
+      var btn = document.getElementById('musicToggle');
+      if (!musicPlaying) {
+        bgMusic.play().then(function() {
+          musicPlaying = true;
+          btn.textContent = '🎵 MUSIC ON';
+          btn.className = 'music-btn music-on';
+        }).catch(function() {
+          alert('🎵 Click anywhere first, then try music again!');
+        });
+      } else {
+        bgMusic.pause();
+        musicPlaying = false;
+        btn.textContent = '🔇 MUSIC OFF';
+        btn.className = 'music-btn music-off';
+      }
+    };
 
     // DATA
     var todo = [], done = [], currentCategory = 'all', xp = 0, streak = 0, lastStudyDate = '';
     function load() {
       var t = localStorage.getItem('ultraTodo'), d = localStorage.getItem('ultraDone');
       var x = localStorage.getItem('ultraXP'), s = localStorage.getItem('ultraStreak'), l = localStorage.getItem('ultraLastDate');
-      if (t) todo = JSON.parse(t); if (d) done = JSON.parse(d);
-      if (x) xp = parseInt(x); if (s) streak = parseInt(s); if (l) lastStudyDate = l;
+      if (t) todo = JSON.parse(t);
+      if (d) done = JSON.parse(d);
+      if (x) xp = parseInt(x);
+      if (s) streak = parseInt(s);
+      if (l) lastStudyDate = l;
     }
     function save() {
       localStorage.setItem('ultraTodo', JSON.stringify(todo));
       localStorage.setItem('ultraDone', JSON.stringify(done));
-      localStorage.setItem('ultraXP', xp); localStorage.setItem('ultraStreak', streak);
+      localStorage.setItem('ultraXP', xp);
+      localStorage.setItem('ultraStreak', streak);
       localStorage.setItem('ultraLastDate', lastStudyDate);
     }
     function addXP(amount) { xp += amount; updateStats(); updateConstellation(); if (xp % 100 < amount) confetti(); }
@@ -614,50 +595,76 @@ window.toggleMusic = function() {
       var today = new Date().toDateString();
       if (lastStudyDate !== today) {
         var yesterday = new Date(Date.now() - 86400000).toDateString();
-        if (lastStudyDate === yesterday) streak++; else streak = 1;
+        if (lastStudyDate === yesterday) streak++;
+        else streak = 1;
         lastStudyDate = today;
       }
       updateStats();
     }
     function updateStats() {
       document.getElementById('xpDisplay').textContent = xp;
-      var rank = 'Cadet'; if (xp >= 500) rank = 'Galaxy Master'; else if (xp >= 300) rank = 'Astronaut'; else if (xp >= 150) rank = 'Pilot';
+      var rank = 'Cadet';
+      if (xp >= 500) rank = 'Galaxy Master';
+      else if (xp >= 300) rank = 'Astronaut';
+      else if (xp >= 150) rank = 'Pilot';
       document.getElementById('rankDisplay').textContent = rank;
-      var sh = streak + ' days'; if (streak >= 7) sh += ' <span class="streak-fire">🔥</span>';
+      var sh = streak + ' days';
+      if (streak >= 7) sh += ' <span class="streak-fire">🔥</span>';
       document.getElementById('streakDisplay').innerHTML = sh;
     }
     var ce = ['⭐', '✨', '💫', '🌟', '🌙', '🪐'];
     var cn = ['Orion\'s Belt', 'Big Dipper', 'Little Star', 'Cosmic Dust', 'Nebula Way', 'Galaxy Core', 'Star Bridge', 'Comet Trail', 'Moon Path', 'Astro Link', 'Space Arc', 'Nova Chain'];
     function updateConstellation() {
-      var t = done.length, d = document.getElementById('constellationDisplay'), n = document.getElementById('constellationName');
+      var t = done.length;
+      var d = document.getElementById('constellationDisplay');
+      var n = document.getElementById('constellationName');
       if (t === 0) { d.textContent = '⭐ · ⭐ · ⭐'; n.textContent = 'Complete tasks to build!'; return; }
-      var p = ''; for (var i = 0; i < Math.min(t, 12); i++) { p += ce[i % 6]; if (i < Math.min(t, 12) - 1) p += ' · '; }
+      var p = '';
+      for (var i = 0; i < Math.min(t, 12); i++) { p += ce[i % 6]; if (i < Math.min(t, 12) - 1) p += ' · '; }
       if (t > 12) p += ' ...';
-      d.textContent = p; n.textContent = cn[Math.min(t - 1, 11)];
+      d.textContent = p;
+      n.textContent = cn[Math.min(t - 1, 11)];
     }
     var me = ['👩‍🚀', '🪼', '🧚', '⭐', '🤖', '👾', '🐱', '🦊', '🐼'];
     var mm = ['You can do it!', 'To the stars!', 'Study time!', 'Focus mode!', 'Great job!', 'Keep going!', 'Almost there!', 'Cosmic power!'];
     var cm = 0;
     document.getElementById('mascot').onclick = function() {
-      cm = (cm + 1) % me.length; this.textContent = me[cm];
+      cm = (cm + 1) % me.length;
+      this.textContent = me[cm];
       document.getElementById('mascotMsg').textContent = mm[Math.floor(Math.random() * 8)];
-      this.style.animation = 'none'; this.offsetHeight;
+      this.style.animation = 'none';
+      this.offsetHeight;
       this.style.animation = 'spin 0.4s linear';
       setTimeout(() => { this.style.animation = 'bounce 1s ease-in-out infinite'; }, 400);
     };
 
-    // TIMER (FIXED + PAUSE/RESUME + CUSTOM)
-    var timerInterval = null;
-    var timerSeconds = 0;
-    var isPaused = false;
-
-        // TIMER (FIXED + SOUND ALERT)
+    // TIMER
     var timerInterval = null;
     var timerSeconds = 0;
     var isPaused = false;
     
-    // Create alarm sound
-    var alarmSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf39/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+Af39/gH9/f4B/f3+
+    window.startTimer = function(minutes) {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      timerSeconds = minutes * 60;
+      isPaused = false;
+      updateTimerDisplay();
+      updatePauseButton();
+      timerInterval = setInterval(function() {
+        timerSeconds--;
+        updateTimerDisplay();
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          timerSeconds = 0;
+          isPaused = false;
+          updateTimerDisplay();
+          updatePauseButton();
+          alert('⏰ Time is up! Great work, astronaut!');
+          addXP(20);
+          confetti();
+        }
+      }, 1000);
+    };
     
     window.startCustomTimer = function() {
       var input = document.getElementById('customMinutes');
@@ -671,22 +678,24 @@ window.toggleMusic = function() {
     window.pauseResumeTimer = function() {
       if (timerSeconds <= 0) return;
       if (isPaused) {
-        // RESUME
         isPaused = false;
         updatePauseButton();
         timerInterval = setInterval(function() {
           timerSeconds--;
           updateTimerDisplay();
           if (timerSeconds <= 0) {
-            clearInterval(timerInterval); timerInterval = null;
-            timerSeconds = 0; isPaused = false;
-            updateTimerDisplay(); updatePauseButton();
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerSeconds = 0;
+            isPaused = false;
+            updateTimerDisplay();
+            updatePauseButton();
             alert('⏰ Time is up! Great work, astronaut!');
-            addXP(20); confetti();
+            addXP(20);
+            confetti();
           }
         }, 1000);
       } else {
-        // PAUSE
         isPaused = true;
         updatePauseButton();
         clearInterval(timerInterval);
@@ -703,7 +712,8 @@ window.toggleMusic = function() {
     };
     
     function updateTimerDisplay() {
-      var min = Math.floor(timerSeconds / 60), sec = timerSeconds % 60;
+      var min = Math.floor(timerSeconds / 60);
+      var sec = timerSeconds % 60;
       document.getElementById('timerDisplay').textContent = (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
     }
     
@@ -722,20 +732,24 @@ window.toggleMusic = function() {
       currentCategory = cat;
       var btns = document.querySelectorAll('.category-btn');
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
-      event.target.classList.add('active'); render();
+      event.target.classList.add('active');
+      render();
     };
     
     window.addEmoji = function(emoji) {
       var input = document.getElementById('taskInput');
-      input.value = emoji + ' ' + input.value; input.focus();
+      input.value = emoji + ' ' + input.value;
+      input.focus();
     };
     
     function confetti() {
       var emojis = ['⭐', '✨', '💫', '🌟', '🎉', '🪐', '🚀', '💖'];
       for (var i = 0; i < 20; i++) {
-        var star = document.createElement('div'); star.className = 'confetti-star';
+        var star = document.createElement('div');
+        star.className = 'confetti-star';
         star.textContent = emojis[Math.floor(Math.random() * 8)];
-        star.style.left = Math.random() * 100 + '%'; star.style.top = -(Math.random() * 100) + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = -(Math.random() * 100) + 'px';
         star.style.animationDuration = (Math.random() * 2 + 2) + 's';
         document.body.appendChild(star);
         setTimeout(function() { star.remove(); }, 3000);
@@ -751,6 +765,7 @@ window.toggleMusic = function() {
       }
       if (filtered.length === 0) tHTML = '<div class="empty-msg">☆ NO MISSIONS YET ☆</div>';
       document.getElementById('todoList').innerHTML = tHTML;
+      
       var dHTML = '';
       for (var j = 0; j < done.length; j++) {
         var d = done[j];
@@ -758,25 +773,40 @@ window.toggleMusic = function() {
       }
       if (done.length === 0) dHTML = '<div class="empty-msg">☆ COMPLETE MISSIONS ☆</div>';
       document.getElementById('doneList').innerHTML = dHTML;
+      
       document.getElementById('todoCount').textContent = filtered.length;
       document.getElementById('doneCount').textContent = done.length;
-      updateConstellation(); save();
+      updateConstellation();
+      save();
     }
     
     window.addTask = function() {
       var text = document.getElementById('taskInput').value.trim();
       if (text === '') return;
       var due = document.getElementById('dueDate').value;
-      todo.push({ id: Date.now().toString(), text: text, category: currentCategory === 'all' ? 'General' : currentCategory, due: due ? new Date(due).toLocaleString() : null });
-      document.getElementById('taskInput').value = ''; document.getElementById('dueDate').value = '';
-      updateStreak(); addXP(10); render();
+      todo.push({
+        id: Date.now().toString(),
+        text: text,
+        category: currentCategory === 'all' ? 'General' : currentCategory,
+        due: due ? new Date(due).toLocaleString() : null
+      });
+      document.getElementById('taskInput').value = '';
+      document.getElementById('dueDate').value = '';
+      updateStreak();
+      addXP(10);
+      render();
       document.getElementById('mascotMsg').textContent = 'Mission added! 🚀';
     };
     
     window.complete = function(id) {
-      for (var i = 0; i < todo.length; i++) { if (todo[i].id === id) { done.push(todo[i]); todo.splice(i, 1); break; } }
-      addXP(30); updateStreak(); document.getElementById('mascotMsg').textContent = 'Awesome work! ⭐';
-      if (done.length % 5 === 0) confetti(); render();
+      for (var i = 0; i < todo.length; i++) {
+        if (todo[i].id === id) { done.push(todo[i]); todo.splice(i, 1); break; }
+      }
+      addXP(30);
+      updateStreak();
+      document.getElementById('mascotMsg').textContent = 'Awesome work! ⭐';
+      if (done.length % 5 === 0) confetti();
+      render();
     };
     
     window.delTodo = function(id) { todo = todo.filter(function(t) { return t.id !== id; }); render(); };
@@ -790,13 +820,20 @@ window.toggleMusic = function() {
       for (var j = 0; j < done.length; j++) text += '☑ ' + done[j].text + '\n';
       text += '\n⭐ XP: ' + xp + ' | 🔥 Streak: ' + streak + ' days';
       var blob = new Blob([text], {type: 'text/plain'});
-      var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-      a.download = 'cosmic-study-log.txt'; a.click();
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'cosmic-study-log.txt';
+      a.click();
     };
     
-    document.getElementById('taskInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') addTask(); });
+    document.getElementById('taskInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addTask();
+    });
     
-    load(); updateStats(); updateConstellation(); render();
+    load();
+    updateStats();
+    updateConstellation();
+    render();
     document.getElementById('mascot').textContent = me[0];
   </script>
 </body>
